@@ -65,4 +65,36 @@ module.exports = class EmployeeController {
 
     res.status(200).json(employees);
   }
+
+  static async getEmployeeById(req, res) {
+    const { id } = req.params;
+    try {
+      const employee = await Employee.findById(id);
+
+      if (!employee) {
+        res.status(404).json({ message: "Usuário não encontrado" });
+      }
+
+      res.status(200).json(employee);
+    } catch (error) {
+      return res.status(422).json({ message: error });
+    }
+  }
+
+  static async deleteEmployee(req, res) {
+    const { id } = req.params;
+    try {
+      const employee = await Employee.findById(id);
+
+      if (!employee) {
+        res.status(404).json({ message: "Usuário não encontrado" });
+      }
+
+      await employee.deleteOne({ _id: id });
+
+      res.status(200).json({ message: "Usuário deletado com sucesso." });
+    } catch (error) {
+      return res.status(422).json({ message: error });
+    }
+  }
 };
