@@ -97,4 +97,19 @@ module.exports = class EmployeeController {
       return res.status(422).json({ message: error });
     }
   }
+
+  static async editEmployee(req, res) {
+    const { id } = req.params;
+    const { name, role, password } = req.body;
+
+    const employee = await Employee.findById({ _id: id });
+
+    if (!employee) {
+      return res.status(404).json({ message: "Funcionário não encontrado." });
+    }
+
+    if (name) {
+      employee.name = name;
+    }
+  }
 };
