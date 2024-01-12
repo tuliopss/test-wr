@@ -9,7 +9,7 @@ services:
       - 3000:3000
     volumes:
       - .:/home/testtec/api
-    
+
   db:
     image: mongo:4.4
     container_name: mongo-db
@@ -19,6 +19,6 @@ services:
       - /mongodb/dbdata:/data/db
       - /mongodb/configdb:/data/configdb
     environment:
-    # MONGO_INITDB_ROOT_USERNAME: root
-    # MONGO_INITDB_ROOT_PASSWORD: root
-    MONGO_INITDB_DATABASE: test-wr
+      # MONGO_INITDB_ROOT_USERNAME:
+      # MONGO_INITDB_ROOT_PASSWORD:
+      MONGO_INITDB_DATABASE: test-wr
