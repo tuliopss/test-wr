@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  api:
+    build: .
+    entrypoint: sh ./.docker/entrypoint.sh
+    container_name: api-test
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/testtec/api
+    
+  db:
+    image: mongo:4.4
+    container_name: mongo-db
+    ports:
+      - 27017:27017
+    volumes:
+      - /mongodb/dbdata:/data/db
+      - /mongodb/configdb:/data/configdb
+    environment:
+    # MONGO_INITDB_ROOT_USERNAME: root
+    # MONGO_INITDB_ROOT_PASSWORD: root
+    MONGO_INITDB_DATABASE: test-wr
