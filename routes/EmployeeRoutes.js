@@ -17,10 +17,16 @@ router.post(
 );
 router.post("/login", employeeController.login);
 router.patch(
-  "/:id",
+  "/edit/:id",
   authGuard,
   verifyPermission,
   employeeController.editEmployee
+);
+router.patch(
+  "/permission/:id",
+  authGuard,
+  verifyPermission,
+  employeeController.givePermission
 );
 router.delete(
   "/:id",

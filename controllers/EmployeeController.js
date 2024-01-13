@@ -136,4 +136,26 @@ module.exports = class EmployeeController {
       res.status(500).json({ message: error });
     }
   }
+
+  static async givePermission(req, res) {
+    const { id } = req.params;
+
+    try {
+      const employee = await Employee.findById(id);
+
+      if (employee.permission) {
+        return res.status(422).json({ errors: ["Usuário ja permitido"] });
+      } else {
+        employee.permission = true;
+      }
+
+      await Employee.findOneAndUpdate({ _id: employee._id }, employee);
+      console.log("Employee controller", employee);
+      res.status(200).json({
+        message: `Permissão concedida ao funcionário ${employee.name}`,
+      });
+    } catch (error) {
+      res.status(500).json({ errors: ["Houve um erro, tente novamente."] });
+    }
+  }
 };
