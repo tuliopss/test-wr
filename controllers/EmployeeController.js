@@ -101,16 +101,39 @@ module.exports = class EmployeeController {
 
   static async editEmployee(req, res) {
     const { id } = req.params;
-    const { name, role, password } = req.body;
+    const { name, role, password, confirmPassword } = req.body;
 
     const employee = await Employee.findById({ _id: id });
 
     if (!employee) {
-      return res.status(404).json({ message: "Funcionário não encontrado." });
+      return res.status(404).json({ errors: ["Funcionário não encontrado."] });
     }
 
     if (name) {
       employee.name = name;
+    }
+    if (role) {
+      employee.role = role;
+    }
+    if (password !== confirmPassword) {
+      res.status(422).json({ errors: ["As senhas não são iguais"] });
+    } else if (password === confirmPassword && password != null) {
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(password, salt);
+
+      employee.password = passwordHash;
+    }
+
+    try {
+      await Employee.findOneAndUpdate(
+        { _id: employee._id },
+        { $set: employee },
+        { new: true }
+      );
+
+      res.status(200).json({ message: "Usuário atualizado com sucesso!" });
+    } catch (error) {
+      res.status(500).json({ message: error });
     }
   }
 };

@@ -16,7 +16,12 @@ router.post(
   employeeController.register
 );
 router.post("/login", employeeController.login);
-router.patch("/:id", employeeController.editEmployee);
+router.patch(
+  "/:id",
+  authGuard,
+  verifyPermission,
+  employeeController.editEmployee
+);
 router.delete(
   "/:id",
   authGuard,
