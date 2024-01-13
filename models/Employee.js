@@ -10,6 +10,7 @@ const Employee = mongoose.model(
       cpf: { type: String, required: true },
       password: { type: String, required: true },
       role: { type: String, required: true },
+      permission: { type: Boolean },
     },
     { timestamps: true }
   )

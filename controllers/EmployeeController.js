@@ -8,7 +8,7 @@ module.exports = class EmployeeController {
   }
 
   static async register(req, res) {
-    const { name, email, password, confirmPassword, cpf, role } = req.body;
+    const { name, email, password, cpf, role, permission } = req.body;
 
     const checkIfUserExists = await Employee.findOne({ email: email });
     try {
@@ -26,6 +26,7 @@ module.exports = class EmployeeController {
         password: passwordHash,
         cpf,
         role,
+        permission,
       });
 
       const newEmployee = await employee.save();

@@ -4,6 +4,7 @@ const employeeController = require("../controllers/EmployeeController");
 const authGuard = require("../middlewares/authGuard");
 const { employeeValidations } = require("../middlewares/employeeValidations");
 const validate = require("../middlewares/handleValidations");
+const verifyPermission = require("../middlewares/verifyPermission");
 
 router.get("/hello", employeeController.helloWorld);
 router.get("/employees", authGuard, employeeController.getEmployees);
@@ -16,6 +17,11 @@ router.post(
 );
 router.post("/login", employeeController.login);
 router.patch("/:id", employeeController.editEmployee);
-router.delete("/:id", employeeController.deleteEmployee);
+router.delete(
+  "/:id",
+  authGuard,
+  verifyPermission,
+  employeeController.deleteEmployee
+);
 
 module.exports = router;
