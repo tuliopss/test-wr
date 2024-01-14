@@ -2,20 +2,37 @@ const router = require("express").Router();
 
 const employeeController = require("../controllers/EmployeeController");
 const authGuard = require("../middlewares/authGuard");
-const { employeeValidations } = require("../middlewares/employeeValidations");
+const {
+  empRegisterValidations,
+  empLoginValidation,
+  empEditValidations,
+  empCreateValidations,
+} = require("../middlewares/employeeValidations");
 const validate = require("../middlewares/handleValidations");
 const verifyPermission = require("../middlewares/verifyPermission");
 
 router.get("/hello", employeeController.helloWorld);
+
 router.get("/employees", authGuard, employeeController.getEmployees);
+
 router.get("/:id", employeeController.getEmployeeById);
+
 router.post(
   "/register",
-  employeeValidations(),
+  empRegisterValidations(),
   validate,
   employeeController.register
 );
-router.post("/login", employeeController.login);
+
+router.post("/login", empLoginValidation(), validate, employeeController.login);
+
+router.post(
+  "/create",
+  empCreateValidations(),
+  validate,
+  employeeController.createEmployee
+);
+// router.post("/login", employeeController.login);
 router.patch(
   "/edit/:id",
   authGuard,

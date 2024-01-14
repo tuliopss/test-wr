@@ -1,22 +1,27 @@
 const { body } = require("express-validator");
 
-const employeeValidations = () => {
+const empRegisterValidations = () => {
   return [
     body("name")
       .isString()
       .withMessage("O nome é obrigatório.")
       .isLength({ min: 2 })
       .withMessage("O nome precisa de no mínimo 2 caracteres"),
+
     body("email")
       .isString()
       .withMessage("O e-mail é obrigatório")
       .isEmail()
       .withMessage("Insira um email válido"),
+
+    body("cpf").isString().withMessage("O CPF é obrigatório"),
+
     body("password")
       .isString()
       .withMessage("A senha é obrigatória")
       .isLength({ min: 3 })
       .withMessage("A senha precisa de no mínimo 3 caracteres"),
+
     body("confirmPassword")
       .isString()
       .withMessage("Confirme sua senha.")
@@ -26,11 +31,12 @@ const employeeValidations = () => {
         }
         return true;
       }),
+
     body("role").isString().withMessage("A função é obrigatória"),
   ];
 };
 
-const loginValidation = () => {
+const empLoginValidation = () => {
   return [
     body("email")
       .isString()
@@ -41,7 +47,7 @@ const loginValidation = () => {
   ];
 };
 
-const employeeEditValidations = () => {
+const empEditValidations = () => {
   return [
     body("nome")
       .optional()
@@ -52,6 +58,8 @@ const employeeEditValidations = () => {
       .optional()
       .isLength({ min: 5 })
       .withMessage("A senha precisa de no mínimo 5 caracteres"),
+
+    body("role").isString().withMessage("A função é obrigatória"),
 
     // body("confirmPassword")
     //   .optional()
@@ -64,8 +72,26 @@ const employeeEditValidations = () => {
     //   }),
   ];
 };
+
+const empCreateValidations = () => {
+  return [
+    body("name")
+      .isString()
+      .withMessage("O nome é obrigatório.")
+      .isLength({ min: 2 })
+      .withMessage("O nome precisa de no mínimo 2 caracteres"),
+    body("email")
+      .isString()
+      .withMessage("O e-mail é obrigatório")
+      .isEmail()
+      .withMessage("Insira um email válido"),
+
+    body("role").isString().withMessage("A função é obrigatória"),
+  ];
+};
 module.exports = {
-  employeeValidations,
-  loginValidation,
-  employeeEditValidations,
+  empRegisterValidations,
+  empLoginValidation,
+  empEditValidations,
+  empCreateValidations,
 };

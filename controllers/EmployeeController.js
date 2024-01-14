@@ -1,3 +1,4 @@
+const checkIfEmailExists = require("../helpers/checkIfEmailsExists");
 const createUserToken = require("../helpers/createUserToken");
 const Employee = require("../models/Employee");
 const bcrypt = require("bcrypt");
@@ -10,9 +11,9 @@ module.exports = class EmployeeController {
   static async register(req, res) {
     const { name, email, password, cpf, role, permission } = req.body;
 
-    const checkIfUserExists = await Employee.findOne({ email: email });
+    const checkEmail = await Employee.findOne({ email: email });
     try {
-      if (checkIfUserExists) {
+      if (checkEmail) {
         return res.status(409).json({ message: "Email já utilizado" });
       }
 
@@ -61,6 +62,37 @@ module.exports = class EmployeeController {
     await createUserToken(employee, req, res);
   }
 
+  static async createEmployee(req, res) {
+    const { name, email, cpf, role } = req.body;
+    const permission = false;
+    // const employee = new Employee({ name, email, cpf, role, permission });
+
+    try {
+      const checkEmail = await Employee.findOne({ email: email });
+
+      if (checkEmail) {
+        return res.status(409).json({ errors: ["Email já utilizado"] });
+      }
+      const employee = new Employee({
+        name,
+        email,
+        cpf,
+        role,
+        permission,
+      });
+
+      const newEmployee = await employee.save();
+      console.log("oi");
+      // const newEmployee = await employee.save();
+      console.log("newEmployee", newEmployee);
+      res
+        .status(201)
+        .json({ message: "Funcionário criado com sucesso!", newEmployee });
+    } catch (error) {
+      res.status(500).json({ errors: ["Houve um erro, tente novamente"] });
+    }
+  }
+
   static async getEmployees(req, res) {
     const employees = await Employee.find();
 
@@ -73,12 +105,12 @@ module.exports = class EmployeeController {
       const employee = await Employee.findById(id);
 
       if (!employee) {
-        res.status(404).json({ message: "Usuário não encontrado" });
+        res.status(404).json({ errors: ["Funcionário não encontrado"] });
       }
 
       res.status(200).json(employee);
     } catch (error) {
-      return res.status(422).json({ message: error });
+      res.status(422).json({ errors: ["Houve um erro, tente novamente"] });
     }
   }
 
@@ -88,12 +120,12 @@ module.exports = class EmployeeController {
       const employee = await Employee.findById(id);
 
       if (!employee) {
-        res.status(404).json({ message: "Usuário não encontrado" });
+        res.status(404).json({ errors: ["Funcionário não encontrado"] });
       }
 
       await employee.deleteOne({ _id: id });
 
-      res.status(200).json({ message: "Usuário deletado com sucesso." });
+      res.status(200).json({ message: "Funcionário deletado com sucesso." });
     } catch (error) {
       return res.status(422).json({ message: error });
     }
@@ -133,7 +165,7 @@ module.exports = class EmployeeController {
 
       res.status(200).json({ message: "Usuário atualizado com sucesso!" });
     } catch (error) {
-      res.status(500).json({ message: error });
+      res.status(500).json({ errors: ["Houve um erro, tente novamente"] });
     }
   }
 
@@ -144,7 +176,9 @@ module.exports = class EmployeeController {
       const employee = await Employee.findById(id);
 
       if (employee.permission) {
-        return res.status(422).json({ errors: ["Usuário ja permitido"] });
+        return res
+          .status(422)
+          .json({ errors: ["Usuário já tem permissões concedidas"] });
       } else {
         employee.permission = true;
       }
