@@ -1,12 +1,11 @@
 const createUserToken = require("../helpers/createUserToken");
+const getToken = require("../helpers/getToken");
+const getUserByToken = require("../helpers/getUserByToken");
+
 const Employee = require("../models/Employee");
 const bcrypt = require("bcrypt");
 
 module.exports = class EmployeeController {
-  static async helloWorld(req, res) {
-    res.status(200).json({ message: "hello world" });
-  }
-
   static async register(req, res) {
     const { name, email, password, cpf, role, permission } = req.body;
 
@@ -61,6 +60,11 @@ module.exports = class EmployeeController {
     await createUserToken(employee, req, res);
   }
 
+  static async currentUser(req, res) {
+    const employee = req.user;
+    res.status(200).json(employee);
+  }
+
   static async createEmployee(req, res) {
     const { name, email, cpf, role } = req.body;
     const permission = false;
@@ -105,6 +109,7 @@ module.exports = class EmployeeController {
 
       if (!employee) {
         res.status(404).json({ errors: ["Funcionário não encontrado"] });
+        return;
       }
 
       res.status(200).json(employee);
@@ -115,14 +120,25 @@ module.exports = class EmployeeController {
 
   static async deleteEmployee(req, res) {
     const { id } = req.params;
+
     try {
       const employee = await Employee.findById(id);
-
+      console.log("GET", employee._id);
       if (!employee) {
         res.status(404).json({ errors: ["Funcionário não encontrado"] });
+        return;
       }
+      const token = getToken(req);
+      const user = await getUserByToken(token);
+      console.log("REWQ", user._id);
 
-      await employee.deleteOne({ _id: id });
+      if (employee._id.toString() === user._id.toString()) {
+        res
+          .status(422)
+          .json({ errors: ["Você não pode excluir seu registro"] });
+        return;
+      }
+      // await employee.deleteOne({ _id: id });
 
       res.status(200).json({ message: "Funcionário deletado com sucesso." });
     } catch (error) {

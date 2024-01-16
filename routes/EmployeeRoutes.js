@@ -11,9 +11,8 @@ const {
 const validate = require("../middlewares/handleValidations");
 const verifyPermission = require("../middlewares/verifyPermission");
 
-router.get("/hello", employeeController.helloWorld);
-
 router.get("/", employeeController.getEmployees);
+router.get("/getProfile", authGuard, employeeController.currentUser);
 
 router.get("/:id", employeeController.getEmployeeById);
 
@@ -42,9 +41,10 @@ router.patch(
 router.patch(
   "/permission/:id",
   authGuard,
-  verifyPermission,
+  // verifyPermission,
   employeeController.givePermission
 );
+
 router.delete(
   "/:id",
   authGuard,
