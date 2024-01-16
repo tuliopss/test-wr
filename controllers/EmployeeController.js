@@ -1,4 +1,3 @@
-const checkIfEmailExists = require("../helpers/checkIfEmailsExists");
 const createUserToken = require("../helpers/createUserToken");
 const Employee = require("../models/Employee");
 const bcrypt = require("bcrypt");
@@ -14,7 +13,7 @@ module.exports = class EmployeeController {
     const checkEmail = await Employee.findOne({ email: email });
     try {
       if (checkEmail) {
-        return res.status(409).json({ message: "Email já utilizado" });
+        return res.status(409).json({ errors: ["Email já utilizado."] });
       }
 
       //crypt password
@@ -38,7 +37,7 @@ module.exports = class EmployeeController {
     } catch (error) {
       console.log(error);
 
-      return res.status(500).json({ message: error });
+      res.status(500).json({ errors: ["Houve um erro, tente novamente"] });
     }
   }
 
@@ -48,14 +47,14 @@ module.exports = class EmployeeController {
     const employee = await Employee.findOne({ email: email });
 
     if (!employee) {
-      res.status(404).json({ message: "Usuário não encontrado" });
+      res.status(404).json({ errors: ["Usuário não encontrado"] });
       return;
     }
 
     const checkPassword = await bcrypt.compare(password, employee.password);
 
     if (!checkPassword) {
-      res.status(422).json({ message: "Senha incorreta." });
+      res.status(422).json({ errors: ["Senha incorreta."] });
       return;
     }
 
@@ -127,13 +126,15 @@ module.exports = class EmployeeController {
 
       res.status(200).json({ message: "Funcionário deletado com sucesso." });
     } catch (error) {
-      return res.status(422).json({ message: error });
+      return res
+        .status(422)
+        .json({ errors: ["Houve um erro, tente novamente"] });
     }
   }
 
   static async editEmployee(req, res) {
     const { id } = req.params;
-    const { name, role, password, confirmPassword } = req.body;
+    const { name, role, email, password, confirmPassword } = req.body;
 
     const employee = await Employee.findById({ _id: id });
 
@@ -147,6 +148,10 @@ module.exports = class EmployeeController {
     if (role) {
       employee.role = role;
     }
+    if (email) {
+      employee.email = email;
+    }
+
     if (password !== confirmPassword) {
       res.status(422).json({ errors: ["As senhas não são iguais"] });
     } else if (password === confirmPassword && password != null) {

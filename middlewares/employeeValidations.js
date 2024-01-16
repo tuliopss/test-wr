@@ -14,7 +14,11 @@ const empRegisterValidations = () => {
       .isEmail()
       .withMessage("Insira um email válido"),
 
-    body("cpf").isString().withMessage("O CPF é obrigatório"),
+    body("cpf")
+      .isString()
+      .withMessage("O CPF é obrigatório")
+      .isLength({ min: 11 })
+      .withMessage("O CPF precisa ter 11 caracteres"),
 
     body("password")
       .isString()
@@ -87,6 +91,7 @@ const empCreateValidations = () => {
       .withMessage("Insira um email válido"),
 
     body("role").isString().withMessage("A função é obrigatória"),
+    body("cpf").isString().withMessage("O CPF é obrigatório"),
   ];
 };
 module.exports = {

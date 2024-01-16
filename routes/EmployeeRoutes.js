@@ -13,7 +13,7 @@ const verifyPermission = require("../middlewares/verifyPermission");
 
 router.get("/hello", employeeController.helloWorld);
 
-router.get("/employees", authGuard, employeeController.getEmployees);
+router.get("/", employeeController.getEmployees);
 
 router.get("/:id", employeeController.getEmployeeById);
 
