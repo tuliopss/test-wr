@@ -170,6 +170,7 @@ module.exports = class EmployeeController {
 
     if (password !== confirmPassword) {
       res.status(422).json({ errors: ["As senhas não são iguais"] });
+      return;
     } else if (password === confirmPassword && password != null) {
       const salt = await bcrypt.genSalt(12);
       const passwordHash = await bcrypt.hash(password, salt);

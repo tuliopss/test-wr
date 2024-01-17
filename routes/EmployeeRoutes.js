@@ -35,13 +35,13 @@ router.post(
 router.patch(
   "/edit/:id",
   authGuard,
-  verifyPermission,
+  // verifyPermission,
   employeeController.editEmployee
 );
 router.patch(
   "/permission/:id",
   authGuard,
-  // verifyPermission,
+  verifyPermission,
   employeeController.givePermission
 );
 
