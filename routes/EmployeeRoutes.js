@@ -11,10 +11,10 @@ const {
 const validate = require("../middlewares/handleValidations");
 const verifyPermission = require("../middlewares/verifyPermission");
 
-router.get("/", employeeController.getEmployees);
+router.get("/", authGuard, employeeController.getEmployees);
 router.get("/getProfile", authGuard, employeeController.currentUser);
 
-router.get("/:id", employeeController.getEmployeeById);
+router.get("/:id", authGuard, employeeController.getEmployeeById);
 
 router.post(
   "/register",
@@ -27,11 +27,12 @@ router.post("/login", empLoginValidation(), validate, employeeController.login);
 
 router.post(
   "/create",
+  authGuard,
   empCreateValidations(),
   validate,
+  verifyPermission,
   employeeController.createEmployee
 );
-// router.post("/login", employeeController.login);
 router.patch(
   "/edit/:id",
   authGuard,

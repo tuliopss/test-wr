@@ -4,19 +4,23 @@ const http = require("http");
 const { Server } = require("socket.io");
 require("dotenv").config();
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocs = require("./swagger.json");
 const app = express();
 
-const server = http.createServer(app);
+//const server = http.createServer(app);
 
 // const io = new Server(server);
 
-const io = new Server(server, {
-  // cors: {
-  //   origin: "*",
-  // },
-});
+// const io = new Server(server, {});
 
 const EmployeeRoutes = require("./routes/EmployeeRoutes.js");
+
+// io.on("connection", (socket) => {
+//   console.log(socket.id);
+// });
+
+app.use("/apidocs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

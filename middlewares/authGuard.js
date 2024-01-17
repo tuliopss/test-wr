@@ -40,6 +40,7 @@ const authGuard = async (req, res, next) => {
     const verified = jwt.verify(token, jwtSecret);
     // console.log(verified);
     const user = await Employee.findById(verified.id);
+    console.log("auth", user);
     req.user = user;
     next();
   } catch (error) {

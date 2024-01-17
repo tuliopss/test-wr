@@ -1,0 +1,96 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de gerenciamento de funcionários",
+    "description": "API desenvolvida para auxiliar no gerenciamento de funcionários",
+    "contact": {
+      "email": "tuliovictorp@hotmail.com"
+    },
+    "version": "1.0.00"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "API main"
+    }
+  ],
+  "paths": {
+    "/employee/create": {
+      "post": {
+        "summary": "Criação de funcionário",
+        "description": "Rota responsável por criar um funcionário",
+        "tags": ["Employee"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Employee"
+              },
+              "examples": {
+                "employee": {
+                  "value": {
+                    "name": "John Doe",
+                    "email": "john@email.com",
+                    "cpf": "12345678911",
+                    "role": "Developer",
+                    "permission": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "response": {
+          "409": {
+            "description": "Email já utilizado"
+          },
+          "401": {
+            "description": "Usuário sem autorização"
+          },
+          "500": {
+            "description": "Houve um erro, tente novamente"
+          },
+          "201": {
+            "description": "Criado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": { "$ref": "#/components/schemas/Employee" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "String"
+          },
+          "email": {
+            "type": "String"
+          },
+          "cpf": {
+            "type": "String"
+          },
+          "role": {
+            "type": "String"
+          },
+          "password": {
+            "type": "String"
+          },
+          "permission": {
+            "type": "Boolean"
+          }
+        }
+      }
+    }
+  }
+}
