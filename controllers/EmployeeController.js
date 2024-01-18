@@ -169,12 +169,6 @@ module.exports = class EmployeeController {
       return res.status(404).json({ errors: ["Funcionário não encontrado."] });
     }
 
-    const checkEmail = await Employee.findOne({ email: email });
-
-    if (checkEmail) {
-      return res.status(409).json({ errors: ["Email já utilizado"] });
-    }
-
     if (name) {
       employee.name = name;
     }
@@ -183,16 +177,6 @@ module.exports = class EmployeeController {
     }
     if (email) {
       employee.email = email;
-    }
-
-    if (password !== confirmPassword) {
-      res.status(422).json({ errors: ["As senhas não são iguais"] });
-      return;
-    } else if (password === confirmPassword && password != null) {
-      const salt = await bcrypt.genSalt(12);
-      const passwordHash = await bcrypt.hash(password, salt);
-
-      employee.password = passwordHash;
     }
 
     try {
@@ -229,6 +213,27 @@ module.exports = class EmployeeController {
       });
     } catch (error) {
       res.status(500).json({ errors: ["Houve um erro, tente novamente."] });
+    }
+  }
+
+  static async changePassword(req, res) {
+    const { password, confirmPassword } = req.body;
+    const { id } = req.params;
+    const employee = await Employee.findById({ _id: id });
+
+    if (!employee) {
+      return res.status(404).json({ errors: ["Funcionário não encontrado."] });
+    }
+
+    if (password !== confirmPassword) {
+      res.status(422).json({ errors: ["Senhas não coincidentes!"] });
+      return;
+    } else if (password === confirmPassword && password != null) {
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(password, salt);
+
+      employee.password = passwordHash;
+      res.status(200).json({ message: "Senha alterada com sucesso" });
     }
   }
 };

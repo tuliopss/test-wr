@@ -36,6 +36,8 @@ router.post(
 router.patch(
   "/edit/:id",
   authGuard,
+  empEditValidations(),
+  validate,
   // verifyPermission,
   employeeController.editEmployee
 );
@@ -44,6 +46,12 @@ router.patch(
   authGuard,
   verifyPermission,
   employeeController.givePermission
+);
+router.patch(
+  "/changePassword/:id",
+  authGuard,
+  verifyPermission,
+  employeeController.changePassword
 );
 
 router.delete(

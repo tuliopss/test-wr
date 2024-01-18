@@ -60,7 +60,7 @@ const empEditValidations = () => {
 
     body("password")
       .optional()
-      .isLength({ min: 5 })
+      .isLength({ min: 3 })
       .withMessage("A senha precisa de no mínimo 5 caracteres"),
 
     body("role").isString().withMessage("A função é obrigatória"),
