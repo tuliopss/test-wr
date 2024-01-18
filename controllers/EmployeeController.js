@@ -9,8 +9,15 @@ module.exports = class EmployeeController {
   static async register(req, res) {
     const { name, email, password, cpf, role, permission } = req.body;
 
-    const checkEmail = await Employee.findOne({ email: email });
     try {
+      const checkCPF = await Employee.findOne({ cpf: cpf });
+
+      if (checkCPF) {
+        return res.status(409).json({ errors: ["CPF já utilizado"] });
+      }
+
+      const checkEmail = await Employee.findOne({ email: email });
+
       if (checkEmail) {
         return res.status(409).json({ errors: ["Email já utilizado."] });
       }
@@ -72,9 +79,13 @@ module.exports = class EmployeeController {
 
     try {
       const checkEmail = await Employee.findOne({ email: email });
+      const checkCPF = await Employee.findOne({ cpf: cpf });
 
       if (checkEmail) {
         return res.status(409).json({ errors: ["Email já utilizado"] });
+      }
+      if (checkCPF) {
+        return res.status(409).json({ errors: ["CPF já utilizado"] });
       }
       const employee = new Employee({
         name,
