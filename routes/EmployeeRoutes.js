@@ -47,7 +47,7 @@ router.patch(
 );
 
 router.delete(
-  "/:id",
+  "/delete/:id",
   authGuard,
   verifyPermission,
   employeeController.deleteEmployee

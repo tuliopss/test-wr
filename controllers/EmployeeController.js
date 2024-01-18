@@ -158,6 +158,12 @@ module.exports = class EmployeeController {
       return res.status(404).json({ errors: ["Funcionário não encontrado."] });
     }
 
+    const checkEmail = await Employee.findOne({ email: email });
+
+    if (checkEmail) {
+      return res.status(409).json({ errors: ["Email já utilizado"] });
+    }
+
     if (name) {
       employee.name = name;
     }
@@ -206,7 +212,7 @@ module.exports = class EmployeeController {
       }
 
       await Employee.findOneAndUpdate({ _id: employee._id }, employee);
-      console.log("Employee controller", employee);
+
       res.status(200).json({
         message: `Permissão concedida ao funcionário ${employee.name}`,
       });

@@ -1,12 +1,12 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "API de gerenciamento de funcionários",
-    "description": "API desenvolvida para auxiliar no gerenciamento de funcionários",
+    "title": " API de gerenciamento de funcionários",
+    "description": "API desenvolvida par  a auxiliar no gerenciamento de funcionários",
     "contact": {
       "email": "tuliovictorp@hotmail.com"
     },
-    "version": "1.0.00"
+    "version": "1.0.0"
   },
   "servers": [
     {
@@ -17,9 +17,59 @@
   "paths": {
     "/employee/create": {
       "post": {
-        "summary": "Criação de funcionário",
-        "description": "Rota responsável por criar um funcionário",
+        "summary": "Cadastro employee",
+        "description": "Irá criar um funcionário",
         "tags": ["Employee"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Employee"
+              },
+              "examples": {
+                "employee": {
+                  "value": {
+                    "name": "John Doe",
+                    "email": "john@email.com",
+                    "cpf": "12345678911",
+                    "role": "Developer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "409": {
+            "description": "Email já utilizado"
+          },
+          "401": {
+            "description": "Usuário sem autorização"
+          },
+          "500": {
+            "description": "Houve um erro, tente novamente"
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": { "$ref": "#/components/schemas/Employee" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employee/register": {
+      "post": {
+        "summary": "Cadastro employee",
+        "description": "Irá cadastrar um funcionário",
+        "tags": ["Employee"],
+        "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "content": {
             "application/json": {
@@ -33,14 +83,16 @@
                     "email": "john@email.com",
                     "cpf": "12345678911",
                     "role": "Developer",
-                    "permission": true
+                    "permission": true,
+                    "password": "***",
+                    "confirmPassword": "***"
                   }
                 }
               }
             }
           }
         },
-        "response": {
+        "responses": {
           "409": {
             "description": "Email já utilizado"
           },
@@ -51,7 +103,7 @@
             "description": "Houve um erro, tente novamente"
           },
           "201": {
-            "description": "Criado",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -63,9 +115,232 @@
           }
         }
       }
+    },
+    "/employee/login": {
+      "post": {
+        "summary": "Cadastro employee",
+        "description": "Irá cadastrar um funcionário",
+        "tags": ["Employee"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Employee"
+              },
+              "examples": {
+                "employee": {
+                  "value": {
+                    "email": "john@email.com",
+                    "password": "***"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "409": {
+            "description": "Email já utilizado"
+          },
+          "401": {
+            "description": "Usuário sem autorização"
+          },
+          "500": {
+            "description": "Houve um erro, tente novamente"
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": { "$ref": "#/components/schemas/Employee" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employee/": {
+      "get": {
+        "summary": "Retorna todos os funcionários",
+        "description": "Retorna todos os funcionários",
+        "tags": ["Employee"],
+        "security": [{ "bearerAuth": [] }],
+
+        "responses": {
+          "401": {
+            "description": "Usuário sem autorização"
+          },
+          "500": {
+            "description": "Houve um erro, tente novamente"
+          }
+        }
+      }
+    },
+    "/employee/{id}": {
+      "get": {
+        "summary": "Retorna um funcionários pelo seu ID",
+        "description": "Retorna um funcionários pelo seu ID",
+        "tags": ["Employee"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do funcionário"
+          }
+        ],
+        "security": [{ "bearerAuth": [] }],
+
+        "responses": {
+          "401": {
+            "description": "Usuário sem autorização"
+          },
+          "500": {
+            "description": "Houve um erro, tente novamente"
+          }
+        }
+      }
+    },
+
+    "/employee/edit/{id}": {
+      "patch": {
+        "summary": "Retorna um funcionários pelo seu ID",
+        "description": "Retorna um funcionários pelo seu ID",
+        "tags": ["Employee"],
+        "security": [{ "bearerAuth": [] }],
+
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do funcionário"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Employee"
+              },
+              "examples": {
+                "employee": {
+                  "value": {
+                    "name": "John Doe",
+                    "email": "john@email.com",
+                    "cpf": "12345678911",
+                    "role": "Developer",
+                    "password": "***",
+                    "confirmPassword": "***"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": { "$ref": "#/components/schemas/Employee" }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário sem autorização"
+          },
+          "409": {
+            "description": "Email já utilizado"
+          },
+          "500": {
+            "description": "Houve um erro, tente novamente"
+          }
+        }
+      }
+    },
+
+    "/employee/permission/${id}": {
+      "patch": {
+        "summary": "Retorna um funcionários pelo seu ID",
+        "description": "Retorna um funcionários pelo seu ID",
+        "tags": ["Employee"],
+        "security": [{ "bearerAuth": [] }],
+
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do funcionário"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "employee": {
+                  "value": {
+                    "permission": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Permissão concedida ao funcionário"
+          },
+          "422": {
+            "description": "Usuário já tem permissões concedidas"
+          },
+          "401": {
+            "description": "Usuário sem autorização"
+          },
+          "409": {
+            "description": "Email já utilizado"
+          },
+          "500": {
+            "description": "Houve um erro, tente novamente"
+          }
+        }
+      }
+    },
+
+    "/employee/delete/{id}": {
+      "delete": {
+        "summary": "Retorna um funcionários pelo seu ID",
+        "description": "Retorna um funcionários pelo seu ID",
+        "tags": ["Employee"],
+        "security": [{ "bearerAuth": [] }],
+
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do funcionário"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Funcionário deletado com sucesso." },
+          "401": {
+            "description": "Usuário sem autorização"
+          },
+          "409": {
+            "description": "Email já utilizado"
+          },
+          "500": {
+            "description": "Houve um erro, tente novamente"
+          }
+        }
+      }
     }
   },
-
   "components": {
     "schemas": {
       "Employee": {
@@ -90,6 +365,13 @@
             "type": "Boolean"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
